@@ -91,39 +91,41 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
           <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: LPICの勉強" />
         </Field>
         <Field label="内容">
-          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="例: 問題集を20問解く" />
+          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="例: 問題集を20問解く" />
         </Field>
-        <Field label="期限">
-          <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        </Field>
-        <Field label="カラー">
-          <div className="flex flex-wrap items-center gap-2">
-            {TASK_COLORS.map((c) => {
-              const selected = color === c.value;
-              return (
-                <button
-                  key={c.name}
-                  type="button"
-                  onClick={() => setColor(c.value)}
-                  title={c.name}
-                  aria-label={`カラー: ${c.name}`}
-                  className={cn(
-                    "flex size-7 items-center justify-center rounded-full border transition-all hover:scale-110",
-                    selected ? "ring-2 ring-black ring-offset-2 ring-offset-white" : "",
-                    c.value ? "border-transparent" : "border-neutral-300",
-                  )}
-                  style={c.value ? { backgroundColor: c.value } : undefined}
-                >
-                  {!c.value && (
-                    <svg viewBox="0 0 24 24" className="size-4 text-neutral-400" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M5 19L19 5" />
-                    </svg>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </Field>
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <Field label="期限">
+            <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+          </Field>
+          <Field label="カラー">
+            <div className="flex flex-wrap items-center gap-2">
+              {TASK_COLORS.map((c) => {
+                const selected = color === c.value;
+                return (
+                  <button
+                    key={c.name}
+                    type="button"
+                    onClick={() => setColor(c.value)}
+                    title={c.name}
+                    aria-label={`カラー: ${c.name}`}
+                    className={cn(
+                      "flex size-7 items-center justify-center rounded-full border transition-all hover:scale-110",
+                      selected ? "ring-2 ring-black ring-offset-2 ring-offset-white" : "",
+                      c.value ? "border-transparent" : "border-neutral-300",
+                    )}
+                    style={c.value ? { backgroundColor: c.value } : undefined}
+                  >
+                    {!c.value && (
+                      <svg viewBox="0 0 24 24" className="size-4 text-neutral-400" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 19L19 5" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
+        </div>
         <Field label="タグ">
           <div className="flex flex-wrap items-center gap-2">
             {tags.map((t) => (
@@ -145,24 +147,26 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
             />
           </div>
         </Field>
-        <Field label="優先度">
-          <div className="flex gap-2">
-            {(Object.keys(PRIORITY_LABEL) as Priority[]).map((p) => (
-              <Choice key={p} active={priority === p} onClick={() => setPriority(p)}>
-                {PRIORITY_LABEL[p]}
-              </Choice>
-            ))}
-          </div>
-        </Field>
-        <Field label="ステータス">
-          <div className="flex flex-wrap gap-2">
-            {(Object.keys(STATUS_LABEL) as Status[]).map((s) => (
-              <Choice key={s} active={status === s} onClick={() => setStatus(s)}>
-                {STATUS_LABEL[s]}
-              </Choice>
-            ))}
-          </div>
-        </Field>
+        <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
+          <Field label="優先度">
+            <div className="flex gap-2">
+              {(Object.keys(PRIORITY_LABEL) as Priority[]).map((p) => (
+                <Choice key={p} active={priority === p} onClick={() => setPriority(p)}>
+                  {PRIORITY_LABEL[p]}
+                </Choice>
+              ))}
+            </div>
+          </Field>
+          <Field label="ステータス">
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(STATUS_LABEL) as Status[]).map((s) => (
+                <Choice key={s} active={status === s} onClick={() => setStatus(s)}>
+                  {STATUS_LABEL[s]}
+                </Choice>
+              ))}
+            </div>
+          </Field>
+        </div>
         <label className="flex items-center gap-2 text-sm text-neutral-700">
           <input type="checkbox" checked={notifyEnabled} onChange={(e) => setNotifyEnabled(e.target.checked)} className="size-4 accent-black" />
           期限が近づいたらメール通知する（拡張機能予定）

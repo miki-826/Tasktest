@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 export function Button({
@@ -111,18 +113,36 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
 }
 
 export function Modal({ open, onClose, children }: { open: boolean; onClose: () => void; children: ReactNode }) {
-  if (!open) return null;
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
+  if (!open || !mounted) return null;
+
+  return createPortal(
     <div
       className="animate-overlay-in fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/40 p-0 backdrop-blur-sm sm:items-start sm:p-4 sm:py-8"
       onClick={onClose}
     >
       <div
-        className="animate-modal-in max-h-[calc(100dvh-1.5rem)] w-full overflow-y-auto overscroll-contain rounded-t-[2rem] border border-white/70 bg-white p-6 shadow-[0_35px_90px_rgba(0,0,0,0.22)] sm:my-auto sm:max-h-[calc(100dvh-4rem)] sm:max-w-lg sm:rounded-[2rem]"
+        className="animate-modal-in max-h-[calc(100dvh-1.5rem)] w-full overflow-y-auto overscroll-contain rounded-t-[2rem] border border-white/70 bg-white p-6 shadow-[0_35px_90px_rgba(0,0,0,0.22)] sm:my-auto sm:max-h-[calc(100dvh-4rem)] sm:max-w-2xl sm:rounded-[2rem]"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
