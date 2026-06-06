@@ -37,3 +37,11 @@ npm run dev
 
 → http://localhost:3000 で Create Account → アプリ利用開始。
 ユーザーごとにデータは RLS で分離されます。
+
+## メール確認（Confirm link）
+
+新規登録は 6 桁コード入力ではなく、Supabase Auth の通常の Confirm メールリンクで完了します。
+
+1. Supabase Dashboard の **Authentication > URL Configuration** で Site URL と Redirect URLs に `https://<your-domain>/auth/confirm`（ローカルは `http://localhost:3000/auth/confirm`）を追加してください。
+2. **Authentication > Email Templates > Confirm signup** は、通常の `{{ .ConfirmationURL }}` を使う構成で動作します。SSR/PKCE 用にテンプレートをカスタムする場合は `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` の形式も利用できます。
+3. 本番では Supabase の既定メール送信制限を避けるため、独自 SMTP の設定を推奨します。

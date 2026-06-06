@@ -30,19 +30,19 @@ export function Shell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[linear-gradient(135deg,#ffffff_0%,#f7f7f4_52%,#ecece7_100%)]">
       {/* PC: 左サイドバー */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-neutral-800 bg-sidebar text-sidebar-foreground md:flex">
-        <div className="px-6 py-6">
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-white/10 bg-sidebar text-sidebar-foreground shadow-[20px_0_60px_rgba(0,0,0,0.14)] md:flex">
+        <div className="px-6 py-7">
           <div className="flex items-center gap-2">
-            <span className="flex size-6 items-center justify-center rounded-md bg-white text-black">
+            <span className="flex size-8 items-center justify-center rounded-xl bg-white text-black shadow-[0_10px_25px_rgba(255,255,255,0.12)]">
               <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12l5 5L20 6" />
               </svg>
             </span>
-            <span className="font-heading text-lg font-bold leading-tight">Minimal Focus</span>
+            <span className="font-heading text-lg font-semibold leading-tight tracking-[-0.03em]">Minimal Focus</span>
           </div>
-          <div className="mt-0.5 pl-8 text-xs text-neutral-500">Task</div>
+          <div className="mt-1 pl-10 font-mono text-[10px] uppercase tracking-[0.32em] text-neutral-500">Task</div>
         </div>
         <nav className="flex-1 px-3">
           {NAV.map((item) => {
@@ -52,8 +52,8 @@ export function Shell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                  active ? "bg-white text-black" : "text-neutral-300 hover:bg-neutral-800",
+                  "mb-1 flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all",
+                  active ? "bg-white text-black shadow-[0_12px_30px_rgba(255,255,255,0.10)]" : "text-neutral-300 hover:bg-white/10 hover:text-white",
                 )}
               >
                 <item.icon className="size-4" />
@@ -62,7 +62,7 @@ export function Shell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t border-neutral-800 px-4 py-4 text-xs text-neutral-400">
+        <div className="border-t border-white/10 px-4 py-4 text-xs text-neutral-400">
           <div className="mb-2 truncate">{email ?? "..."}</div>
           <button onClick={handleLogout} className="text-neutral-300 hover:text-white">
             ログアウト
@@ -78,7 +78,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </main>
 
       {/* スマホ: 下部ナビ */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-neutral-200 bg-white/90 backdrop-blur-md md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-white/70 bg-white/90 shadow-[0_-18px_45px_rgba(0,0,0,0.08)] backdrop-blur-xl md:hidden">
         {NAV.map((item) => {
           const active = isActive(pathname, item.href);
           return (
@@ -87,7 +87,7 @@ export function Shell({ children }: { children: ReactNode }) {
               href={item.href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] transition-colors",
-                active ? "text-black" : "text-neutral-400",
+                active ? "text-black" : "text-neutral-400 hover:text-neutral-700",
               )}
             >
               <item.icon className="size-5" />
@@ -100,7 +100,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {/* 追加ボタン (FAB) */}
       <button
         onClick={() => setShowAdd(true)}
-        className="fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-black text-2xl text-white shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-8 md:right-8"
+        className="fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-black text-2xl text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] ring-1 ring-white/20 transition-transform hover:scale-105 active:scale-95 md:bottom-8 md:right-8"
         aria-label="タスクを追加"
       >
         +

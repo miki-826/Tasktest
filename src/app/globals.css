@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
-  --muted: #6b7280;
-  --border: #e5e7eb;
+  --background: #f7f7f4;
+  --foreground: #0a0a0a;
+  --muted: #686868;
+  --border: #deded8;
   --card: #ffffff;
-  --sidebar: #0a0a0a;
+  --sidebar: #050505;
   --sidebar-foreground: #ffffff;
 }
 
@@ -29,9 +29,9 @@
 
 body {
   background:
-    radial-gradient(1100px 600px at 85% -10%, rgba(0, 0, 0, 0.035), transparent 60%),
-    radial-gradient(900px 500px at -5% 110%, rgba(0, 0, 0, 0.025), transparent 55%),
-    var(--background);
+    radial-gradient(900px 520px at 88% -12%, rgba(0, 0, 0, 0.08), transparent 62%),
+    radial-gradient(760px 460px at -10% 105%, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(135deg, #ffffff 0%, var(--background) 48%, #ecece7 100%);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
@@ -52,7 +52,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
+  background: #bdbdb7;
   border-radius: 4px;
 }
 
