@@ -47,29 +47,43 @@ export default function LoginPage() {
     }
   }
 
+  const formInner = (
+    <>
+      <div className="mb-6">
+        <h1 className="font-heading text-2xl font-bold tracking-tight">Login</h1>
+        <p className="mt-1 text-sm text-neutral-600">すべてをシンプルに管理する。</p>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        {error && <p className="text-sm text-black">⚠ {error}</p>}
+        {message && <p className="text-sm text-neutral-700">{message}</p>}
+        <Button onClick={signIn} disabled={loading || !email || !password} className="mt-2 w-full">
+          {loading ? "..." : "Login"}
+        </Button>
+        <Button variant="secondary" onClick={signUp} disabled={loading || !email || !password} className="w-full">
+          Create Account
+        </Button>
+      </div>
+    </>
+  );
+
+  const cardClass = "rounded-2xl border border-neutral-200 bg-white/95 p-7 shadow-2xl backdrop-blur-sm";
+
   return (
-    <div
-      className="relative flex min-h-screen items-center justify-center bg-white bg-cover bg-center px-6 py-12 md:justify-end md:pr-[10vw]"
-      style={{ backgroundImage: "url('/login-bg.png')" }}
-    >
-      <div className="relative z-10 w-full max-w-sm rounded-2xl border border-neutral-200 bg-white/95 p-7 shadow-2xl backdrop-blur-sm">
-        <div className="mb-6">
-          <h1 className="font-heading text-2xl font-bold tracking-tight">Minimal Focus Task</h1>
-          <p className="mt-1 text-sm text-neutral-600">すべてをシンプルに管理する。</p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {error && <p className="text-sm text-black">⚠ {error}</p>}
-          {message && <p className="text-sm text-neutral-700">{message}</p>}
-          <Button onClick={signIn} disabled={loading || !email || !password} className="mt-2 w-full">
-            {loading ? "..." : "Login"}
-          </Button>
-          <Button variant="secondary" onClick={signUp} disabled={loading || !email || !password} className="w-full">
-            Create Account
-          </Button>
+    <div className="flex min-h-screen items-center justify-center bg-white p-4 sm:p-8">
+      {/* PC: 画像とフォームを同じコンテナに入れ、一緒に拡大縮小させる */}
+      <div
+        className="relative hidden w-full max-w-6xl bg-cover bg-center md:block"
+        style={{ backgroundImage: "url('/login-bg.png')", aspectRatio: "1672 / 941" }}
+      >
+        <div className={`absolute right-[6%] top-1/2 w-[clamp(280px,30%,360px)] -translate-y-1/2 ${cardClass}`}>
+          {formInner}
         </div>
       </div>
+
+      {/* スマホ: フォームのみ中央表示 */}
+      <div className={`w-full max-w-sm md:hidden ${cardClass}`}>{formInner}</div>
     </div>
   );
 }
