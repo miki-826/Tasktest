@@ -49,12 +49,10 @@ export default function LoginPage() {
 
   return (
     <div
-      className="relative flex min-h-screen items-center justify-center bg-sidebar bg-cover bg-center px-6 py-12"
+      className="relative flex min-h-screen items-center justify-center bg-white bg-cover bg-center px-6 py-12 md:justify-end md:pr-[10vw]"
       style={{ backgroundImage: "url('/login-bg.png')" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-black/20" />
-
-      <div className="relative z-10 w-full max-w-sm rounded-2xl border border-white/40 bg-white/90 p-7 shadow-2xl backdrop-blur-xl">
+      <div className="relative z-10 w-full max-w-sm rounded-2xl border border-neutral-200 bg-white/95 p-7 shadow-2xl backdrop-blur-sm">
         <div className="mb-6">
           <h1 className="font-heading text-2xl font-bold tracking-tight">Minimal Focus Task</h1>
           <p className="mt-1 text-sm text-neutral-600">すべてをシンプルに管理する。</p>
@@ -67,7 +65,7 @@ export default function LoginPage() {
           <Button onClick={signIn} disabled={loading || !email || !password} className="mt-2 w-full">
             {loading ? "..." : "Login"}
           </Button>
-          <Button variant="secondary" onClick={signUp} disabled={loading || !email || !password} className="w-full bg-white/70">
+          <Button variant="secondary" onClick={signUp} disabled={loading || !email || !password} className="w-full">
             Create Account
           </Button>
         </div>
