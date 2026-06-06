@@ -114,11 +114,11 @@ export function Modal({ open, onClose, children }: { open: boolean; onClose: () 
   if (!open) return null;
   return (
     <div
-      className="animate-overlay-in fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="animate-overlay-in fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/40 p-0 backdrop-blur-sm sm:items-start sm:p-4 sm:py-8"
       onClick={onClose}
     >
       <div
-        className="animate-modal-in max-h-[90vh] w-full overflow-y-auto rounded-t-[2rem] border border-white/70 bg-white p-6 shadow-[0_35px_90px_rgba(0,0,0,0.22)] sm:max-w-lg sm:rounded-[2rem]"
+        className="animate-modal-in max-h-[calc(100dvh-1.5rem)] w-full overflow-y-auto overscroll-contain rounded-t-[2rem] border border-white/70 bg-white p-6 shadow-[0_35px_90px_rgba(0,0,0,0.22)] sm:my-auto sm:max-h-[calc(100dvh-4rem)] sm:max-w-lg sm:rounded-[2rem]"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

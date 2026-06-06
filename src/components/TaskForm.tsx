@@ -88,7 +88,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
 
       <div className="flex flex-col gap-4">
         <Field label="タイトル">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: LPICの勉強" autoFocus />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: LPICの勉強" />
         </Field>
         <Field label="内容">
           <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="例: 問題集を20問解く" />
