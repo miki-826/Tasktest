@@ -208,13 +208,6 @@ export default function LoginPage() {
       <div className="relative hidden w-full max-w-6xl overflow-hidden rounded-[2.25rem] border border-white/50 bg-white shadow-[0_45px_120px_rgba(0,0,0,0.28)] md:block" style={{ aspectRatio: "1672 / 941" }}>
         <div className="absolute inset-0 bg-cover bg-center grayscale" style={{ backgroundImage: "url('/login-bg.png')" }} />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0.55)_48%,rgba(255,255,255,0.9))]" />
-        <div className="absolute left-10 top-10 rounded-full border border-white/70 bg-white/60 px-4 py-2 font-mono text-xs uppercase tracking-[0.35em] text-black backdrop-blur-xl">
-          Focus / Tasks / Study
-        </div>
-        <div className="absolute bottom-10 left-10 max-w-lg text-white mix-blend-difference">
-          <p className="font-mono text-xs uppercase tracking-[0.45em]">Minimal Focus</p>
-          <p className="mt-3 font-heading text-5xl font-semibold tracking-[-0.07em]">Plan quietly. Finish sharply.</p>
-        </div>
         <div className={cn("absolute right-[6%] top-1/2 w-[clamp(350px,34%,430px)] -translate-y-1/2", cardClass)}>
           {step === "confirm" ? confirmView : formView}
         </div>
