@@ -48,7 +48,7 @@ export default function StudyPage() {
             <div key={b.label} className="flex items-center gap-3 text-sm">
               <span className="w-10 shrink-0 font-mono text-xs text-neutral-500">{b.label}</span>
               <div className="h-4 flex-1 overflow-hidden rounded bg-neutral-100">
-                <div className="h-full bg-black" style={{ width: `${(b.min / maxMin) * 100}%` }} />
+                <div className="h-full rounded bg-black transition-all" style={{ width: `${(b.min / maxMin) * 100}%` }} />
               </div>
               <span className="w-12 shrink-0 text-right font-mono text-xs text-neutral-600">{b.min}m</span>
             </div>
@@ -62,10 +62,10 @@ export default function StudyPage() {
           <p className="py-8 text-center text-sm text-neutral-400">学習ログはまだありません</p>
         ) : (
           sortedLogs.map((l) => (
-            <div key={l.id} className="flex items-start gap-3 border-b border-neutral-200 py-3 last:border-0">
+            <div key={l.id} className="group flex items-start gap-3 border-b border-neutral-200 py-3 last:border-0">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="truncate text-sm font-medium">{l.title}</span>
+                  <span className="truncate text-sm font-medium text-neutral-900">{l.title}</span>
                   <span className="font-mono text-xs text-neutral-600">{formatMinutes(l.durationMinutes)}</span>
                 </div>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
@@ -77,7 +77,7 @@ export default function StudyPage() {
               <button
                 onClick={() => deleteStudyLog(l.id)}
                 aria-label="削除"
-                className="mt-0.5 shrink-0 text-neutral-300 hover:text-black"
+                className="mt-0.5 shrink-0 text-neutral-300 opacity-0 transition-all hover:text-black group-hover:opacity-100"
               >
                 <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
@@ -121,7 +121,7 @@ function StudyForm({ open, onClose }: { open: boolean; onClose: () => void }) {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h2 className="font-heading mb-5 text-xl font-bold">Add Study Log</h2>
+      <h2 className="font-heading mb-5 text-xl font-bold text-neutral-900">学習ログを追加</h2>
       <div className="flex flex-col gap-4">
         <Field label="学習内容">
           <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="LPIC 101 問題集" autoFocus />

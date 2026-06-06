@@ -33,7 +33,7 @@ export default function SettingsPage() {
         <h2 className="font-heading mb-4 font-bold">Email Notification</h2>
         <div className="flex items-center justify-between border-b border-neutral-200 py-3">
           <div>
-            <div className="text-sm font-medium">メール通知</div>
+            <div className="text-sm font-medium text-neutral-900">メール通知</div>
             <div className="text-xs text-neutral-500">期限前にメールで通知します（拡張機能予定）</div>
           </div>
           <button
@@ -54,7 +54,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="py-3">
-          <div className="mb-2 text-sm font-medium">通知タイミング</div>
+          <div className="mb-2 text-sm font-medium text-neutral-900">通知タイミング</div>
           <div className="flex flex-wrap gap-2">
             {TIMINGS.map((t) => (
               <button
@@ -64,7 +64,7 @@ export default function SettingsPage() {
                   "rounded-md border px-3 py-1.5 text-sm transition-colors",
                   settings.notifyTiming === t.value
                     ? "border-black bg-black text-white"
-                    : "border-neutral-300 bg-white hover:bg-neutral-100",
+                    : "border-neutral-300 bg-white text-black hover:bg-neutral-100",
                 )}
               >
                 {t.label}

@@ -32,7 +32,7 @@ export default function DashboardPage() {
     <>
       <PageHeader title="Dashboard" subtitle="今日の集中ポイントを確認しましょう" />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Today Tasks" value={todayTasks.length} sub="今日が期限のタスク" />
         <StatCard label="Study Today" value={todayMinutes} sub="分 / 本日の学習時間" />
         <StatCard label="Overdue" value={overdueTasks.length} sub="期限切れタスク" />
@@ -44,7 +44,7 @@ export default function DashboardPage() {
           <Card>
             <div className="mb-2 flex items-center justify-between">
               <h2 className="font-heading font-bold">今日のタスク</h2>
-              <Link href="/tasks" className="text-xs text-neutral-500 hover:text-black">
+              <Link href="/tasks" className="text-xs text-neutral-500 transition-colors hover:text-black">
                 すべて見る →
               </Link>
             </div>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
         <Card>
           <div className="mb-2 flex items-center justify-between">
             <h2 className="font-heading font-bold">最近の学習ログ</h2>
-            <Link href="/study" className="text-xs text-neutral-500 hover:text-black">
+            <Link href="/study" className="text-xs text-neutral-500 transition-colors hover:text-black">
               すべて見る →
             </Link>
           </div>
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           ) : (
             recentLogs.map((l) => (
               <div key={l.id} className="flex items-center justify-between border-b border-neutral-200 py-2.5 text-sm last:border-0">
-                <span className="truncate">{l.title}</span>
+                <span className="truncate text-neutral-800">{l.title}</span>
                 <span className="ml-2 shrink-0 font-mono text-neutral-600">{formatMinutes(l.durationMinutes)}</span>
               </div>
             ))

@@ -32,10 +32,17 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       {/* PC: 左サイドバー */}
-      <aside className="hidden w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground md:flex">
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-neutral-800 bg-sidebar text-sidebar-foreground md:flex">
         <div className="px-6 py-6">
-          <div className="font-heading text-lg font-bold leading-tight">Minimal Focus</div>
-          <div className="text-xs text-neutral-400">Task</div>
+          <div className="flex items-center gap-2">
+            <span className="flex size-6 items-center justify-center rounded-md bg-white text-black">
+              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12l5 5L20 6" />
+              </svg>
+            </span>
+            <span className="font-heading text-lg font-bold leading-tight">Minimal Focus</span>
+          </div>
+          <div className="mt-0.5 pl-8 text-xs text-neutral-500">Task</div>
         </div>
         <nav className="flex-1 px-3">
           {NAV.map((item) => {
@@ -65,18 +72,23 @@ export function Shell({ children }: { children: ReactNode }) {
 
       {/* メインコンテンツ */}
       <main className="flex-1 pb-20 md:pb-0">
-        <div className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">{children}</div>
+        <div key={pathname} className="animate-fade-in-up mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
+          {children}
+        </div>
       </main>
 
       {/* スマホ: 下部ナビ */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-neutral-200 bg-white md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-neutral-200 bg-white/90 backdrop-blur-md md:hidden">
         {NAV.map((item) => {
           const active = isActive(pathname, item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px]", active ? "text-black" : "text-neutral-400")}
+              className={cn(
+                "flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] transition-colors",
+                active ? "text-black" : "text-neutral-400",
+              )}
             >
               <item.icon className="size-5" />
               {item.label}
@@ -88,7 +100,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {/* 追加ボタン (FAB) */}
       <button
         onClick={() => setShowAdd(true)}
-        className="fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-black text-2xl text-white shadow-lg md:bottom-8 md:right-8"
+        className="fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-black text-2xl text-white shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-8 md:right-8"
         aria-label="タスクを追加"
       >
         +

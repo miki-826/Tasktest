@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addTask, updateTask } from "@/lib/store";
-import { PRIORITY_LABEL, STATUS_LABEL, type Priority, type Status, type Task } from "@/lib/types";
+import { PRIORITY_LABEL, STATUS_LABEL, TASK_COLORS, type Priority, type Status, type Task } from "@/lib/types";
 import { Button, Field, Input, Modal, Tag, Textarea } from "./ui";
 import { cn } from "@/lib/utils";
 
@@ -14,22 +14,35 @@ interface Props {
 }
 
 export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
-  const [title, setTitle] = useState(task?.title ?? "");
-  const [description, setDescription] = useState(task?.description ?? "");
-  const [dueDate, setDueDate] = useState(task?.dueDate ?? presetDueDate ?? "");
-  const [priority, setPriority] = useState<Priority>(task?.priority ?? "mid");
-  const [status, setStatus] = useState<Status>(task?.status ?? "todo");
-  const [tags, setTags] = useState<string[]>(task?.tags ?? []);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState<Priority>("mid");
+  const [status, setStatus] = useState<Status>("todo");
+  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [notifyEnabled, setNotifyEnabled] = useState(task?.notifyEnabled ?? false);
+  const [color, setColor] = useState<string | null>(null);
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setTitle(task?.title ?? "");
+    setDescription(task?.description ?? "");
+    setDueDate(task?.dueDate ?? presetDueDate ?? "");
+    setPriority(task?.priority ?? "mid");
+    setStatus(task?.status ?? "todo");
+    setTags(task?.tags ?? []);
+    setColor(task?.color ?? null);
+    setNotifyEnabled(task?.notifyEnabled ?? false);
+    setTagInput("");
+  }, [open, task, presetDueDate]);
 
   function addTag() {
     const t = tagInput.trim();
     if (t && !tags.includes(t)) setTags([...tags, t]);
     setTagInput("");
   }
-
-  const [saving, setSaving] = useState(false);
 
   async function submit() {
     if (!title.trim()) return;
@@ -40,6 +53,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
       priority,
       status,
       tags,
+      color,
       notifyEnabled,
       notifyBeforeMinutes: task?.notifyBeforeMinutes ?? 1440,
     };
@@ -58,7 +72,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h2 className="font-heading mb-5 text-xl font-bold">{task ? "Edit Task" : "New Task"}</h2>
+      <h2 className="font-heading mb-5 text-xl font-bold text-neutral-900">{task ? "タスクを編集" : "新しいタスク"}</h2>
       <div className="flex flex-col gap-4">
         <Field label="タイトル">
           <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="LPICの勉強" autoFocus />
@@ -68,6 +82,33 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
         </Field>
         <Field label="期日">
           <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        </Field>
+        <Field label="カラー">
+          <div className="flex flex-wrap items-center gap-2">
+            {TASK_COLORS.map((c) => {
+              const selected = color === c.value;
+              return (
+                <button
+                  key={c.name}
+                  type="button"
+                  onClick={() => setColor(c.value)}
+                  title={c.name}
+                  className={cn(
+                    "flex size-7 items-center justify-center rounded-full border transition-all hover:scale-110",
+                    selected ? "ring-2 ring-black ring-offset-2 ring-offset-white" : "",
+                    c.value ? "border-transparent" : "border-neutral-300",
+                  )}
+                  style={c.value ? { backgroundColor: c.value } : undefined}
+                >
+                  {!c.value && (
+                    <svg viewBox="0 0 24 24" className="size-4 text-neutral-400" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 19L19 5" />
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </Field>
         <Field label="タグ">
           <div className="flex flex-wrap items-center gap-2">
@@ -86,7 +127,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
                 }
               }}
               placeholder="タグを追加 + Enter"
-              className="flex-1 min-w-[120px] rounded-md border border-neutral-300 px-2 py-1 text-sm outline-none focus:border-black"
+              className="min-w-[120px] flex-1 rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-black"
             />
           </div>
         </Field>
@@ -108,7 +149,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
             ))}
           </div>
         </Field>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-neutral-700">
           <input type="checkbox" checked={notifyEnabled} onChange={(e) => setNotifyEnabled(e.target.checked)} className="size-4 accent-black" />
           期限が近づいたらメール通知する（拡張機能予定）
         </label>
@@ -117,7 +158,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
             キャンセル
           </Button>
           <Button onClick={submit} disabled={!title.trim() || saving}>
-            {saving ? "..." : "Save Task"}
+            {saving ? "..." : "保存する"}
           </Button>
         </div>
       </div>

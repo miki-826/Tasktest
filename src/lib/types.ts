@@ -9,6 +9,7 @@ export interface Task {
   status: Status;
   priority: Priority;
   tags: string[];
+  color: string | null;
   notifyEnabled: boolean;
   notifyBeforeMinutes: number;
   createdAt: string;
@@ -42,3 +43,14 @@ export const PRIORITY_LABEL: Record<Priority, string> = {
   mid: "中",
   low: "低",
 };
+
+export const TASK_COLORS: { name: string; value: string | null }[] = [
+  { name: "なし", value: null },
+  { name: "レッド", value: "#f87171" },
+  { name: "オレンジ", value: "#fb923c" },
+  { name: "イエロー", value: "#facc15" },
+  { name: "グリーン", value: "#4ade80" },
+  { name: "ブルー", value: "#60a5fa" },
+  { name: "パープル", value: "#c084fc" },
+  { name: "ピンク", value: "#f472b6" },
+];

@@ -14,12 +14,15 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
   }
 
   return (
-    <div className="flex items-start gap-3 border-b border-neutral-200 py-3 last:border-0">
+    <div
+      className="group relative flex items-start gap-3 rounded-lg border-l-2 py-3 pl-3 pr-2 transition-colors hover:bg-neutral-50"
+      style={{ borderLeftColor: task.color ?? "transparent" }}
+    >
       <button
         onClick={toggle}
         aria-label="完了切り替え"
         className={cn(
-          "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors",
+          "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90",
           done ? "border-black bg-black text-white" : "border-neutral-400 hover:border-black",
         )}
       >
@@ -30,9 +33,12 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
         )}
       </button>
 
-      <div className="min-w-0 flex-1 cursor-pointer" onClick={() => onEdit?.(task)}>
+      <div className="min-w-0 flex-1 cursor-pointer" onClick={() => onEdit?.(task)} title="クリックで編集">
         <div className="flex items-center gap-2">
-          <span className={cn("truncate text-sm font-medium", done && "text-neutral-400 line-through")}>{task.title}</span>
+          {task.color && <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: task.color }} />}
+          <span className={cn("truncate text-sm font-medium text-neutral-900", done && "text-neutral-400 line-through")}>
+            {task.title}
+          </span>
           <PriorityBadge priority={task.priority} />
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
@@ -54,7 +60,7 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
           if (confirm(`「${task.title}」を削除しますか？`)) deleteTask(task.id);
         }}
         aria-label="削除"
-        className="mt-0.5 shrink-0 text-neutral-300 hover:text-black"
+        className="mt-0.5 shrink-0 text-neutral-300 opacity-0 transition-all hover:text-black group-hover:opacity-100"
       >
         <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />

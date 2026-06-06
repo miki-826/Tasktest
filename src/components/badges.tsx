@@ -3,7 +3,7 @@ import { PRIORITY_LABEL, STATUS_LABEL, type Priority, type Status } from "@/lib/
 
 export function StatusBadge({ status }: { status: Status }) {
   const styles: Record<Status, string> = {
-    todo: "border border-neutral-300 bg-white text-neutral-700",
+    todo: "border border-neutral-300 text-neutral-700",
     in_progress: "bg-black text-white",
     done: "bg-neutral-100 text-neutral-400 line-through",
     hold: "border border-dashed border-neutral-400 text-neutral-500",

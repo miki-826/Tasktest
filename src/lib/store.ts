@@ -13,6 +13,7 @@ type TaskRow = {
   status: Task["status"];
   priority: Task["priority"];
   tags: string[];
+  color: string | null;
   notify_enabled: boolean;
   notify_before_minutes: number;
   created_at: string;
@@ -38,6 +39,7 @@ function rowToTask(r: TaskRow): Task {
     status: r.status,
     priority: r.priority,
     tags: r.tags ?? [],
+    color: r.color ?? null,
     notifyEnabled: r.notify_enabled,
     notifyBeforeMinutes: r.notify_before_minutes,
     createdAt: r.created_at,
@@ -53,6 +55,7 @@ function taskToRow(t: Partial<Task>): Partial<TaskRow> {
   if (t.status !== undefined) row.status = t.status;
   if (t.priority !== undefined) row.priority = t.priority;
   if (t.tags !== undefined) row.tags = t.tags;
+  if (t.color !== undefined) row.color = t.color;
   if (t.notifyEnabled !== undefined) row.notify_enabled = t.notifyEnabled;
   if (t.notifyBeforeMinutes !== undefined) row.notify_before_minutes = t.notifyBeforeMinutes;
   return row;

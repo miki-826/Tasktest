@@ -7,7 +7,7 @@ const WEEKDAYS = ["月", "火", "水", "木", "金", "土", "日"];
 
 interface Props {
   year: number;
-  month: number; // 0-indexed
+  month: number;
   tasks: Task[];
   selected?: string | null;
   onSelect?: (dateStr: string) => void;
@@ -18,7 +18,7 @@ interface Props {
 
 export function MonthCalendar({ year, month, tasks, selected, onSelect, onPrev, onNext, compact }: Props) {
   const first = new Date(year, month, 1);
-  const startOffset = (first.getDay() + 6) % 7; // Mondayを0に
+  const startOffset = (first.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = todayStr();
 
@@ -38,7 +38,7 @@ export function MonthCalendar({ year, month, tasks, selected, onSelect, onPrev, 
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-heading text-lg font-bold">
+        <h2 className="font-heading text-lg font-bold text-neutral-900">
           {year} {first.toLocaleString("en-US", { month: "long" })}
         </h2>
         <div className="flex gap-1">
@@ -54,7 +54,7 @@ export function MonthCalendar({ year, month, tasks, selected, onSelect, onPrev, 
           </div>
         ))}
         {cells.map((d, i) => {
-          if (d === null) return <div key={i} className="bg-white" />;
+          if (d === null) return <div key={i} className="bg-neutral-50/60" />;
           const dateStr = toDateStr(new Date(year, month, d));
           const dayTasks = tasksByDate.get(dateStr) ?? [];
           const isToday = dateStr === today;
@@ -71,7 +71,7 @@ export function MonthCalendar({ year, month, tasks, selected, onSelect, onPrev, 
             >
               <span
                 className={cn(
-                  "inline-flex size-6 items-center justify-center rounded-full font-mono text-xs",
+                  "inline-flex size-6 items-center justify-center rounded-full font-mono text-xs text-neutral-700",
                   isToday && "bg-black text-white",
                 )}
               >
@@ -79,25 +79,30 @@ export function MonthCalendar({ year, month, tasks, selected, onSelect, onPrev, 
               </span>
               {!compact && (
                 <div className="mt-1 space-y-0.5">
-                  {dayTasks.slice(0, 3).map((t) => (
-                    <div
-                      key={t.id}
-                      className={cn(
-                        "truncate rounded px-1 py-0.5 text-[10px]",
-                        t.status === "done"
-                          ? "bg-neutral-100 text-neutral-400 line-through"
-                          : t.dueDate! < today
-                            ? "bg-black text-white"
-                            : "bg-neutral-800 text-white",
-                      )}
-                    >
-                      {t.title}
-                    </div>
-                  ))}
+                  {dayTasks.slice(0, 3).map((t) => {
+                    const isDone = t.status === "done";
+                    const isLate = !isDone && t.dueDate! < today;
+                    const bg = isDone ? undefined : (t.color ?? (isLate ? "#000000" : "#171717"));
+                    const fg = t.color && !isDone ? "#0a0a0a" : "#ffffff";
+                    return (
+                      <div
+                        key={t.id}
+                        className={cn("truncate rounded px-1 py-0.5 text-[10px]", isDone && "bg-neutral-100 text-neutral-400 line-through")}
+                        style={isDone ? undefined : { backgroundColor: bg, color: fg }}
+                      >
+                        {t.title}
+                      </div>
+                    );
+                  })}
                   {dayTasks.length > 3 && <div className="text-[10px] text-neutral-400">+{dayTasks.length - 3}</div>}
                 </div>
               )}
-              {compact && dayTasks.length > 0 && <div className="mx-auto mt-0.5 size-1 rounded-full bg-black" />}
+              {compact && dayTasks.length > 0 && (
+                <div
+                  className="mx-auto mt-0.5 size-1 rounded-full"
+                  style={{ backgroundColor: dayTasks[0].color ?? "#000000" }}
+                />
+              )}
             </button>
           );
         })}
@@ -110,7 +115,7 @@ function NavBtn({ onClick, label }: { onClick?: () => void; label: string }) {
   return (
     <button
       onClick={onClick}
-      className="flex size-8 items-center justify-center rounded-md border border-neutral-300 text-neutral-600 hover:bg-neutral-100"
+      className="flex size-8 items-center justify-center rounded-md border border-neutral-300 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-black"
     >
       {label}
     </button>
