@@ -27,15 +27,21 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    setTitle(task?.title ?? "");
-    setDescription(task?.description ?? "");
-    setDueDate(task?.dueDate ?? presetDueDate ?? "");
-    setPriority(task?.priority ?? "mid");
-    setStatus(task?.status ?? "todo");
-    setTags(task?.tags ?? []);
-    setColor(task?.color ?? null);
-    setNotifyEnabled(task?.notifyEnabled ?? false);
-    setTagInput("");
+
+    const timer = window.setTimeout(() => {
+      setTitle(task?.title ?? "");
+      setDescription(task?.description ?? "");
+      setDueDate(task?.dueDate ?? presetDueDate ?? "");
+      setPriority(task?.priority ?? "mid");
+      setStatus(task?.status ?? "todo");
+      setTags(task?.tags ?? []);
+      setColor(task?.color ?? null);
+      setNotifyEnabled(task?.notifyEnabled ?? false);
+      setTagInput("");
+      setSaving(false);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [open, task, presetDueDate]);
 
   function addTag() {
@@ -72,15 +78,22 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h2 className="font-heading mb-5 text-xl font-bold text-neutral-900">{task ? "タスクを編集" : "新しいタスク"}</h2>
+      <div className="mb-5">
+        <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.3em] text-neutral-500">{task ? "Edit task" : "New task"}</p>
+        <h2 className="font-heading text-2xl font-semibold tracking-[-0.04em] text-neutral-950">
+          {task ? "タスクの内容を変更" : "新しいタスクを追加"}
+        </h2>
+        {task && <p className="mt-1 text-sm text-neutral-500">タイトル、内容、期限、状態をここでまとめて編集できます。</p>}
+      </div>
+
       <div className="flex flex-col gap-4">
         <Field label="タイトル">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="LPICの勉強" autoFocus />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例: LPICの勉強" autoFocus />
         </Field>
         <Field label="内容">
-          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="問題集を30問解く" />
+          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="例: 問題集を20問解く" />
         </Field>
-        <Field label="期日">
+        <Field label="期限">
           <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
         </Field>
         <Field label="カラー">
@@ -93,6 +106,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
                   type="button"
                   onClick={() => setColor(c.value)}
                   title={c.name}
+                  aria-label={`カラー: ${c.name}`}
                   className={cn(
                     "flex size-7 items-center justify-center rounded-full border transition-all hover:scale-110",
                     selected ? "ring-2 ring-black ring-offset-2 ring-offset-white" : "",
@@ -114,7 +128,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
           <div className="flex flex-wrap items-center gap-2">
             {tags.map((t) => (
               <Tag key={t} onClick={() => setTags(tags.filter((x) => x !== t))}>
-                #{t} ✕
+                #{t} ×
               </Tag>
             ))}
             <input
@@ -127,7 +141,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
                 }
               }}
               placeholder="タグを追加 + Enter"
-              className="min-w-[120px] flex-1 rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-black"
+              className="min-w-[120px] flex-1 rounded-2xl border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-black"
             />
           </div>
         </Field>
@@ -158,7 +172,7 @@ export function TaskForm({ open, onClose, task, presetDueDate }: Props) {
             キャンセル
           </Button>
           <Button onClick={submit} disabled={!title.trim() || saving}>
-            {saving ? "..." : "保存する"}
+            {saving ? "保存中..." : task ? "変更を保存" : "タスクを追加"}
           </Button>
         </div>
       </div>
@@ -172,7 +186,7 @@ function Choice({ active, onClick, children }: { active: boolean; onClick: () =>
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-md border px-3 py-1.5 text-sm transition-colors",
+        "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
         active ? "border-black bg-black text-white" : "border-neutral-300 bg-white text-black hover:bg-neutral-100",
       )}
     >

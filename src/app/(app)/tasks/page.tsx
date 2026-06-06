@@ -9,6 +9,8 @@ import { TaskForm } from "@/components/TaskForm";
 
 type Sort = "due" | "priority" | "created";
 
+const PRIORITY_RANK: Record<Priority, number> = { high: 0, mid: 1, low: 2 };
+
 export default function TasksPage() {
   const tasks = useTasks();
   const [query, setQuery] = useState("");
@@ -25,8 +27,6 @@ export default function TasksPage() {
     return [...set];
   }, [tasks]);
 
-  const priorityRank: Record<Priority, number> = { high: 0, mid: 1, low: 2 };
-
   const filtered = useMemo(() => {
     let list = tasks.filter((t) => {
       if (query && !(t.title + t.description).toLowerCase().includes(query.toLowerCase())) return false;
@@ -37,7 +37,7 @@ export default function TasksPage() {
     });
     list = [...list].sort((a, b) => {
       if (sort === "due") return (a.dueDate ?? "9999").localeCompare(b.dueDate ?? "9999");
-      if (sort === "priority") return priorityRank[a.priority] - priorityRank[b.priority];
+      if (sort === "priority") return PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
       return b.createdAt.localeCompare(a.createdAt);
     });
     return list;
@@ -47,7 +47,7 @@ export default function TasksPage() {
     <>
       <PageHeader
         title="Tasks"
-        subtitle={`${filtered.length} 件のタスク`}
+        subtitle={`${filtered.length}件のタスク。タスクを選択すると内容を変更できます。`}
         action={<Button onClick={() => setShowAdd(true)}>+ New Task</Button>}
       />
 
@@ -72,7 +72,7 @@ export default function TasksPage() {
               ))}
             </Select>
             <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
-              <option value="due">並び替え: 期日順</option>
+              <option value="due">並び替え: 期限順</option>
               <option value="priority">並び替え: 優先度順</option>
               <option value="created">並び替え: 作成日順</option>
             </Select>

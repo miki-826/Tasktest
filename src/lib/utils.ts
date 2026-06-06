@@ -18,7 +18,7 @@ export function toDateStr(date: Date): string {
 }
 
 export function formatDate(dateStr: string | null): string {
-  if (!dateStr) return "期日なし";
+  if (!dateStr) return "期限なし";
   const [y, m, d] = dateStr.split("-");
   return `${y}/${m}/${d}`;
 }

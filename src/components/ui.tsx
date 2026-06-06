@@ -74,10 +74,10 @@ export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectE
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5">
       <span className="font-heading text-xs uppercase tracking-wide text-neutral-500">{label}</span>
       {children}
-    </label>
+    </div>
   );
 }
 

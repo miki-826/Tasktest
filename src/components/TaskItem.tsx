@@ -9,18 +9,38 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
   const done = task.status === "done";
   const overdue = !done && isOverdue(task.dueDate);
 
+  function edit() {
+    onEdit?.(task);
+  }
+
   function toggle() {
     updateTask(task.id, { status: done ? "todo" : "done" });
   }
 
   return (
     <div
-      className="group relative flex items-start gap-3 rounded-lg border-l-2 py-3 pl-3 pr-2 transition-colors hover:bg-neutral-50"
+      role={onEdit ? "button" : undefined}
+      tabIndex={onEdit ? 0 : undefined}
+      onClick={edit}
+      onKeyDown={(event) => {
+        if (!onEdit) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          edit();
+        }
+      }}
+      className={cn(
+        "group relative flex items-start gap-3 rounded-lg border-l-2 py-3 pl-3 pr-2 text-left transition-colors hover:bg-neutral-50",
+        onEdit && "cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black",
+      )}
       style={{ borderLeftColor: task.color ?? "transparent" }}
     >
       <button
-        onClick={toggle}
-        aria-label="完了切り替え"
+        onClick={(event) => {
+          event.stopPropagation();
+          toggle();
+        }}
+        aria-label="完了・未完了を切り替え"
         className={cn(
           "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90",
           done ? "border-black bg-black text-white" : "border-neutral-400 hover:border-black",
@@ -33,7 +53,7 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
         )}
       </button>
 
-      <div className="min-w-0 flex-1 cursor-pointer" onClick={() => onEdit?.(task)} title="クリックで編集">
+      <div className="min-w-0 flex-1" title={onEdit ? "クリックで編集" : undefined}>
         <div className="flex items-center gap-2">
           {task.color && <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: task.color }} />}
           <span className={cn("truncate text-sm font-medium text-neutral-900", done && "text-neutral-400 line-through")}>
@@ -53,10 +73,25 @@ export function TaskItem({ task, onEdit }: { task: Task; onEdit?: (task: Task) =
             </span>
           ))}
         </div>
+        {task.description && <p className="mt-1 line-clamp-2 text-xs leading-5 text-neutral-500">{task.description}</p>}
       </div>
 
+      {onEdit && (
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            edit();
+          }}
+          aria-label="タスクを編集"
+          className="mt-0.5 shrink-0 rounded-full border border-neutral-200 bg-white px-2 py-1 text-xs text-neutral-500 opacity-100 transition-all hover:border-black hover:text-black md:opacity-0 md:group-hover:opacity-100"
+        >
+          編集
+        </button>
+      )}
+
       <button
-        onClick={() => {
+        onClick={(event) => {
+          event.stopPropagation();
           if (confirm(`「${task.title}」を削除しますか？`)) deleteTask(task.id);
         }}
         aria-label="削除"

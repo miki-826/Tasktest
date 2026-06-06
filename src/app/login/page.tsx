@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 type Mode = "login" | "signup";
 type Step = "form" | "confirm";
 
+const AUTH_CONFIRMATION_ERROR = "確認リンクの検証に失敗しました。メールを再送するか、もう一度登録してください。";
+
 function getConfirmRedirectUrl() {
   if (typeof window === "undefined") return undefined;
   return `${window.location.origin}/auth/confirm`;
@@ -25,13 +27,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const trimmedEmail = email.trim();
+  const isLogin = mode === "login";
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("error") === "auth-confirmation-failed") {
-      setError("確認リンクの検証に失敗しました。メールを再送するか、もう一度登録してください。");
-      window.history.replaceState(null, "", window.location.pathname);
-    }
+    if (params.get("error") !== "auth-confirmation-failed") return;
+
+    window.history.replaceState(null, "", window.location.pathname);
+    const timer = window.setTimeout(() => setError(AUTH_CONFIRMATION_ERROR), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   function reset() {
@@ -42,6 +46,7 @@ export default function LoginPage() {
   function switchMode(next: Mode) {
     setMode(next);
     setStep("form");
+    setPassword("");
     reset();
   }
 
@@ -80,7 +85,7 @@ export default function LoginPage() {
       router.refresh();
     } else {
       setStep("confirm");
-      setMessage(`${trimmedEmail} に確認メールを送信しました。メール内の Confirm リンクを開いて登録を完了してください。`);
+      setMessage(`${trimmedEmail} に確認メールを送信しました。メール内のリンクを開くと登録が完了します。`);
     }
   }
 
@@ -100,7 +105,7 @@ export default function LoginPage() {
       setError(error.message);
       return;
     }
-    setMessage("確認メールを再送しました。メール内の Confirm リンクから登録を完了してください。");
+    setMessage("確認メールを再送しました。メール内のリンクから登録を完了してください。");
   }
 
   const confirmView = (
@@ -113,12 +118,11 @@ export default function LoginPage() {
       </div>
       <div>
         <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.35em] text-neutral-500">Check your inbox</p>
-        <h1 className="font-heading text-2xl font-semibold tracking-[-0.04em] text-neutral-950">Confirm メールを送信しました</h1>
+        <h1 className="font-heading text-2xl font-semibold tracking-[-0.04em] text-neutral-950">メール確認が必要です</h1>
         <p className="mt-2 text-sm leading-6 text-neutral-600">{message}</p>
       </div>
-      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-xs leading-5 text-neutral-600">
-        Supabase の通常のメール確認リンクで認証します。メールテンプレートで <span className="font-mono text-neutral-950">ConfirmationURL</span> または
-        <span className="font-mono text-neutral-950"> token_hash</span> を使っている場合も、このアプリの確認エンドポイントでセッション化できます。
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm leading-6 text-neutral-600">
+        新規登録は、Supabase の通常の確認リンクで完了します。番号の入力は不要です。
       </div>
       {error && <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">⚠ {error}</p>}
       <div className="flex flex-col gap-2 sm:flex-row">
@@ -126,7 +130,7 @@ export default function LoginPage() {
           {loading ? "送信中..." : "確認メールを再送"}
         </Button>
         <Button variant="secondary" onClick={() => switchMode("login")} className="flex-1">
-          ログインに戻る
+          ログインへ
         </Button>
       </div>
     </div>
@@ -134,28 +138,36 @@ export default function LoginPage() {
 
   const formView = (
     <>
-      <div className="mb-6 grid grid-cols-2 gap-1 rounded-full border border-neutral-200 bg-neutral-100/80 p-1 shadow-inner">
-        {(["login", "signup"] as Mode[]).map((m) => (
-          <button
-            key={m}
-            onClick={() => switchMode(m)}
-            className={cn(
-              "rounded-full py-2.5 text-sm font-semibold transition-all",
-              mode === m ? "bg-black text-white shadow-[0_8px_20px_rgba(0,0,0,0.18)]" : "text-neutral-500 hover:text-black",
-            )}
-          >
-            {m === "login" ? "ログイン" : "新規登録"}
-          </button>
-        ))}
+      <div className="mb-6 grid grid-cols-2 gap-1 rounded-[1.5rem] border border-neutral-200 bg-neutral-100/80 p-1 shadow-inner">
+        {(["login", "signup"] as Mode[]).map((m) => {
+          const active = mode === m;
+          return (
+            <button
+              key={m}
+              onClick={() => switchMode(m)}
+              className={cn(
+                "rounded-[1.2rem] px-3 py-3 text-left transition-all",
+                active ? "bg-black text-white shadow-[0_8px_20px_rgba(0,0,0,0.18)]" : "text-neutral-500 hover:text-black",
+              )}
+            >
+              <span className="block text-sm font-semibold">{m === "login" ? "ログイン" : "新規登録"}</span>
+              <span className={cn("mt-0.5 block text-[11px]", active ? "text-neutral-300" : "text-neutral-500")}>
+                {m === "login" ? "登録済みの方" : "はじめての方"}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="mb-6">
         <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.35em] text-neutral-500">Minimal Focus</p>
         <h1 className="font-heading text-3xl font-semibold tracking-[-0.055em] text-neutral-950">
-          {mode === "login" ? "おかえりなさい" : "アカウントを作成"}
+          {isLogin ? "ログイン" : "新規登録"}
         </h1>
         <p className="mt-2 text-sm leading-6 text-neutral-500">
-          {mode === "login" ? "メールとパスワードでワークスペースに入ります。" : "登録後、Supabase の Confirm メールリンクで認証します。"}
+          {isLogin
+            ? "すでに作成済みのアカウントで入ります。"
+            : "メールアドレスとパスワードを登録し、届いた確認メールのリンクを開いて完了します。"}
         </p>
       </div>
 
@@ -163,20 +175,23 @@ export default function LoginPage() {
         <Input type="email" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
         <Input
           type="password"
-          placeholder="パスワード（6文字以上）"
+          placeholder={isLogin ? "パスワード" : "パスワード（6文字以上）"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          autoComplete={mode === "login" ? "current-password" : "new-password"}
+          autoComplete={isLogin ? "current-password" : "new-password"}
         />
+        <p className="text-xs leading-5 text-neutral-500">
+          {isLogin ? "アカウントがない場合は、上の「新規登録」に切り替えてください。" : "登録後に確認メールを送ります。認証番号の入力はありません。"}
+        </p>
         {error && <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">⚠ {error}</p>}
         {message && <p className="text-sm text-neutral-500">{message}</p>}
-        {mode === "login" ? (
+        {isLogin ? (
           <Button onClick={signIn} disabled={loading || !trimmedEmail || !password} className="mt-1 w-full py-3">
-            {loading ? "ログイン中..." : "ログイン"}
+            {loading ? "ログイン中..." : "ログインする"}
           </Button>
         ) : (
           <Button onClick={signUp} disabled={loading || !trimmedEmail || !password} className="mt-1 w-full py-3">
-            {loading ? "送信中..." : "Confirm メールを送信"}
+            {loading ? "送信中..." : "確認メールを送って登録"}
           </Button>
         )}
       </div>
@@ -200,7 +215,7 @@ export default function LoginPage() {
           <p className="font-mono text-xs uppercase tracking-[0.45em]">Minimal Focus</p>
           <p className="mt-3 font-heading text-5xl font-semibold tracking-[-0.07em]">Plan quietly. Finish sharply.</p>
         </div>
-        <div className={cn("absolute right-[6%] top-1/2 w-[clamp(330px,32%,410px)] -translate-y-1/2", cardClass)}>
+        <div className={cn("absolute right-[6%] top-1/2 w-[clamp(350px,34%,430px)] -translate-y-1/2", cardClass)}>
           {step === "confirm" ? confirmView : formView}
         </div>
       </div>
